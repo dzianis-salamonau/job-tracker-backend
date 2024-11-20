@@ -1,0 +1,17 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "api/jobs/index.js",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "utils/mongodb.js",
+        "use": "@vercel/node"
+      }
+    ],
+    "env": {
+      "MONGO_URI": "mongodb://mongo:zwYSUSdUhsMxiEtnNnCMwxMufOeqcodM@junction.proxy.rlwy.net:53945"
+    }
+  }
+  
