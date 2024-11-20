@@ -1,76 +1,72 @@
-const express = require('express');
-const Job = require('../models/Job');
+import { connectToDatabase } from '../../utils/mongodb';
+import Job from '../../models/Job';
 
-const router = express.Router();
+export default async function handler(req, res) {
+  const { method } = req;
 
-// Utility function for handling errors
-const handleError = (res, error, message = 'Internal Server Error', statusCode = 500) => {
-  console.error(error); // Log error for debugging
-  res.status(statusCode).json({ error: message });
-};
+  // Connect to the database
+  await connectToDatabase();
 
-// Get all jobs
-router.get('/', async (req, res) => {
-  try {
-    const jobs = await Job.find();
-    res.json(jobs);
-  } catch (error) {
-    handleError(res, error, 'Failed to fetch jobs.', 500);
+  switch (method) {
+    case 'GET':
+      try {
+        // Fetch all jobs
+        const jobs = await Job.find();
+        res.status(200).json(jobs);
+      } catch (error) {
+        console.error('Error fetching jobs:', error);
+        res.status(500).json({ error: 'Failed to fetch jobs' });
+      }
+      break;
+
+    case 'POST':
+      try {
+        // Create a new job
+        const { company, position, salaryRange, status, notes } = req.body;
+        const newJob = new Job({ company, position, salaryRange, status, notes });
+        await newJob.save();
+        res.status(201).json(newJob);
+      } catch (error) {
+        console.error('Error creating job:', error);
+        res.status(500).json({ error: 'Failed to create job' });
+      }
+      break;
+
+    case 'PUT':
+      try {
+        // Update an existing job
+        const { id } = req.query; // Assuming job ID is passed as a query parameter
+        const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true });
+
+        if (!updatedJob) {
+          return res.status(404).json({ error: 'Job not found' });
+        }
+
+        res.status(200).json(updatedJob);
+      } catch (error) {
+        console.error('Error updating job:', error);
+        res.status(500).json({ error: 'Failed to update job' });
+      }
+      break;
+
+    case 'DELETE':
+      try {
+        // Delete an existing job
+        const { id } = req.query; // Assuming job ID is passed as a query parameter
+        const deletedJob = await Job.findByIdAndDelete(id);
+
+        if (!deletedJob) {
+          return res.status(404).json({ error: 'Job not found' });
+        }
+
+        res.status(204).send(); // No content, successful deletion
+      } catch (error) {
+        console.error('Error deleting job:', error);
+        res.status(500).json({ error: 'Failed to delete job' });
+      }
+      break;
+
+    default:
+      res.status(405).json({ error: 'Method Not Allowed' });
   }
-});
-
-// Create a new job
-router.post('/', async (req, res) => {
-  const { company, position, salaryRange, status, notes } = req.body;
-
-  // Check for required fields
-  if (!company || !position) {
-    return res.status(400).json({ error: 'Company and Position are required.' });
-  }
-
-  try {
-    const newJob = new Job({ company, position, salaryRange, status, notes });
-    await newJob.save();
-    res.status(201).json(newJob);
-  } catch (error) {
-    handleError(res, error, 'Failed to save job.', 500);
-  }
-});
-
-// Update a job
-router.put('/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true });
-
-    // Check if job was found and updated
-    if (!updatedJob) {
-      return res.status(404).json({ error: 'Job not found.' });
-    }
-
-    res.json(updatedJob);
-  } catch (error) {
-    handleError(res, error, 'Failed to update job.', 500);
-  }
-});
-
-// Delete a job
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const deletedJob = await Job.findByIdAndDelete(id);
-
-    // Check if job was found and deleted
-    if (!deletedJob) {
-      return res.status(404).json({ error: 'Job not found.' });
-    }
-
-    res.status(204).send(); // No content, successful deletion
-  } catch (error) {
-    handleError(res, error, 'Failed to delete job.', 500);
-  }
-});
-
-module.exports = router;
+}

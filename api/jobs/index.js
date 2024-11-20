@@ -1,5 +1,5 @@
 import { connectToDatabase } from '../../utils/mongodb';
-import Job from '../../models/jobModel';
+import Job from '../../models/Job';
 
 export default async function handler(req, res) {
   const { method } = req;
