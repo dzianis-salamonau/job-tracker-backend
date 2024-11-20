@@ -9,9 +9,6 @@
         "src": "utils/mongodb.js",
         "use": "@vercel/node"
       }
-    ],
-    "env": {
-      "MONGO_URI": "mongodb://mongo:zwYSUSdUhsMxiEtnNnCMwxMufOeqcodM@junction.proxy.rlwy.net:53945"
-    }
+    ]
   }
   
