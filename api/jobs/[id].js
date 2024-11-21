@@ -18,6 +18,26 @@ export default async function handler(req, res) {
   await connectToDatabase();
 
   switch (method) {
+    case 'GET':
+      try {
+        console.log('GET Request for Job ID:', id);
+        // Fetch a specific job by ID
+        const job = await Job.findById(id);
+        if (!job) {
+          console.log('Job not found for ID:', id);
+          return res.status(404).json({ error: 'Job not found' });
+        }
+        res.status(200).json(job);
+      } catch (error) {
+        console.error('GET Error Details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
+        res.status(500).json({ error: 'Failed to retrieve job' });
+      }
+      break;
+      
     case 'PUT':
       try {
         console.log('PUT Request Body:', req.body);
