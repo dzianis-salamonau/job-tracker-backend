@@ -6,6 +6,11 @@ export default async function handler(req, res) {
   const { method } = req;
   const { id } = req.query; // Get the job ID from the URL
 
+  // Add detailed logging
+  console.log('Request Method:', method);
+  console.log('Job ID:', id);
+  console.log('Request Body:', req.body);
+
   // Apply CORS middleware first
   if (corsMiddleware(req, res)) return;
 

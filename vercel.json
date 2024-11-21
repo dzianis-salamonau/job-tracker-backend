@@ -34,7 +34,7 @@
     {
       "src": "/api/jobs/(.*)",
       "dest": "/api/jobs/[id].js",
-      "methods": ["PUT", "DELETE", "OPTIONS"],
+      "methods": ["GET", "PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://job-tracker-frontend-iota.vercel.app",
         "Access-Control-Allow-Credentials": "true",
