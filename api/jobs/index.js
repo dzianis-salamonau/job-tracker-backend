@@ -4,6 +4,17 @@ import Job from '../../models/Job';
 export default async function handler(req, res) {
   const { method } = req;
 
+  // Use environment variable for allowed origin
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'; // Default to '*' if not set
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (method === 'OPTIONS') {
+    return res.status(200).end(); // End the response for preflight requests
+  }
+
   // Connect to the database
   await connectToDatabase();
 
@@ -28,7 +39,7 @@ export default async function handler(req, res) {
           position,
           salaryRange,
           status,
-          notes
+          notes,
         });
         await newJob.save();
         res.status(201).json(newJob);
