@@ -23,7 +23,7 @@
     {
       "src": "/api/jobs/",
       "dest": "/api/jobs/index.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "methods": ["GET", "POST", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://job-tracker-frontend-iota.vercel.app",
         "Access-Control-Allow-Credentials": "true",
@@ -34,7 +34,7 @@
     {
       "src": "/api/jobs/(.*)",
       "dest": "/api/jobs/[id].js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "methods": ["PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://job-tracker-frontend-iota.vercel.app",
         "Access-Control-Allow-Credentials": "true",
