@@ -1,19 +1,12 @@
+import { corsMiddleware } from '../../utils/cors';
 import { connectToDatabase } from '../../utils/mongodb';
 import Job from '../../models/Job';
 
 export default async function handler(req, res) {
   const { method } = req;
 
-  // Use environment variable for allowed origin
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'; // Default to '*' if not set
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight requests
-  if (method === 'OPTIONS') {
-    return res.status(200).end(); // End the response for preflight requests
-  }
+  // Apply CORS middleware first
+  if (corsMiddleware(req, res)) return;
 
   // Connect to the database
   await connectToDatabase();

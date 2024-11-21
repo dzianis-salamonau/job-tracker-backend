@@ -1,3 +1,4 @@
+import { corsMiddleware } from '../../utils/cors';
 import { connectToDatabase } from '../../utils/mongodb';
 import Job from '../../models/Job';
 
@@ -5,16 +6,8 @@ export default async function handler(req, res) {
   const { method } = req;
   const { id } = req.query; // Get the job ID from the URL
 
-  // Add CORS headers
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'; // Update this to your frontend URL in production
-  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  // Handle preflight requests
-  if (method === 'OPTIONS') {
-    return res.status(200).end(); // End preflight request
-  }
+  // Apply CORS middleware first
+  if (corsMiddleware(req, res)) return;
 
   // Connect to the database
   await connectToDatabase();
@@ -22,11 +15,23 @@ export default async function handler(req, res) {
   switch (method) {
     case 'PUT':
       try {
+        console.log('PUT Request Body:', req.body);
+        console.log('PUT Request Query:', req.query);
+        console.log('PUT Request Headers:', req.headers);
+
         // Update an existing job by ID
         const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedJob) return res.status(404).json({ error: 'Job not found' });
+        if (!updatedJob) {
+          console.log('Job not found for ID:', id);
+          return res.status(404).json({ error: 'Job not found' });
+        }
         res.status(200).json(updatedJob);
       } catch (error) {
+        console.error('PUT Error Details:', {
+          message: error.message,
+          stack: error.stack,
+          name: error.name
+        });
         res.status(500).json({ error: 'Failed to update job' });
       }
       break;
