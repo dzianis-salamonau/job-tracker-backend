@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { method } = req;
 
   // Use environment variable for allowed origin
-  const allowedOrigin = /*process.env.ALLOWED_ORIGIN || */'*'; // Default to '*' if not set
+  const allowedOrigin = process.env.ALLOWED_ORIGIN || '*'; // Default to '*' if not set
   res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
