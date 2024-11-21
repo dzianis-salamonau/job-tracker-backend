@@ -34,6 +34,10 @@ export default async function handler(req, res) {
 
     case 'PUT':
       try {
+        console.log('PUT Request Body j:', req.body);
+        console.log('PUT Request Query j:', req.query);
+        console.log('PUT Request Headers j:', req.headers);
+
         // Update an existing job
         const { id } = req.query; // Assuming job ID is passed as a query parameter
         const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true });
