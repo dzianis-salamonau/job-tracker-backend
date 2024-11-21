@@ -11,10 +11,7 @@ export async function connectToDatabase() {
   }
 
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(MONGO_URI);
     isConnected = true;
     console.log('MongoDB connected');
   } catch (error) {

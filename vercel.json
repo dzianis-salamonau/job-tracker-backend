@@ -32,8 +32,8 @@
       }
     },
     {
-      "src": "/api/jobs/(.*)",
-      "dest": "/api/jobs/[id].js",
+      "src": "/api/jobs/([^/]+)$",
+      "dest": "/api/jobs/[id].js?id=$1",
       "methods": ["GET", "PUT", "DELETE", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "https://job-tracker-frontend-iota.vercel.app",

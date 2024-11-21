@@ -8,6 +8,17 @@ export default async function handler(req, res) {
 
   // Add detailed logging
   console.log('Request Method:', method);
+  console.log('Full Query:', req.query); // Logs all query parameters, including id
+  console.log('Request Body:', req.body); // Logs the body of the request
+
+  // For GET request, we can log more details for debugging
+  if (method === 'GET') {
+    console.log('GET Request URL:', req.url);
+    console.log('GET Request Query Parameters:', req.query);
+  }
+
+  // Add detailed logging
+  console.log('Request Method:', method);
   console.log('Job ID:', id);
   console.log('Request Body:', req.body);
 
@@ -25,7 +36,7 @@ export default async function handler(req, res) {
         const job = await Job.findById(id);
         if (!job) {
           console.log('Job not found for ID:', id);
-          return res.status(404).json({ error: 'Job not found' });
+          return res.status(404).json({ error: 'Job not found!', id });
         }
         res.status(200).json(job);
       } catch (error) {
