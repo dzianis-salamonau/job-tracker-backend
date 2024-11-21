@@ -42,41 +42,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'Failed to create job' });
       }
       break;
-
-    case 'PUT':
-      try {
-        // Update an existing job
-        const { id } = req.query; // Assuming job ID is passed as a query parameter
-        const updatedJob = await Job.findByIdAndUpdate(id, req.body, { new: true });
-
-        if (!updatedJob) {
-          return res.status(404).json({ error: 'Job not found' });
-        }
-
-        res.status(200).json(updatedJob);
-      } catch (error) {
-        console.error('Error updating job:', error);
-        res.status(500).json({ error: 'Failed to update job' });
-      }
-      break;
-
-    case 'DELETE':
-      try {
-        // Delete an existing job
-        const { id } = req.query; // Assuming job ID is passed as a query parameter
-        const deletedJob = await Job.findByIdAndDelete(id);
-
-        if (!deletedJob) {
-          return res.status(404).json({ error: 'Job not found' });
-        }
-
-        res.status(204).end(); // No content, successful deletion
-      } catch (error) {
-        console.error('Error deleting job:', error);
-        res.status(500).json({ error: 'Failed to delete job' });
-      }
-      break;
-
+      
     default:
       res.status(405).json({ error: 'Method Not Allowed' });
   }
